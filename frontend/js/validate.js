@@ -34,6 +34,13 @@ function validate_form_func() {
     valid = validate_non_negative(epsElement) && valid;
     valid = validate_non_negative(lengthElement) && valid;
 
+    if (stepElement.value > lengthElement.value) {
+        showError(stepElement, "Шаг на интервале должен быть <= длине интервала");
+        valid = false;
+    } else {
+        showSuccess(stepElement)
+    }
+
     return valid;
 }
 
