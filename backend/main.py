@@ -1,11 +1,9 @@
-from typing import List
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from dto.interpolation_response import InterpolationResponse
-from dto.point import Point
-from service.interpolation_service import interpolate
+from dto.odu_request_dto import OduRequestDto
+from dto.odu_response_dto import OduResponseDto
+from service import odu_service
 
 app = FastAPI()
 
@@ -25,10 +23,13 @@ async def root():
     return "pong"
 
 
-@app.post("/interpolate", response_model=InterpolationResponse)
-async def root(points: List[Point]):
-    print(points)
+@app.get("/get_available_functions")
+async def root():
+    return odu_service.get_available_odu_dtos()
 
-    interpolation_result: InterpolationResponse = interpolate(points)
 
-    return interpolation_result
+@app.post("/find_best_similar", response_model=OduResponseDto)
+async def root(odu_request_dto: OduRequestDto):
+    print(odu_request_dto)
+    return odu_service.find_best_similar(odu_request_dto.odu_id, odu_request_dto.x0, odu_request_dto.y0,
+                                         odu_request_dto.interval_length, odu_request_dto.step, odu_request_dto.eps)

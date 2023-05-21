@@ -18,189 +18,55 @@ function showSuccess(input) {
     error.textContent = '';
 }
 
-function validate_form_table() {
-    let valid = true;
-
-    let table = document.getElementById("input_table");
-    let cells = table.querySelectorAll("td");
-
-    cells.forEach((cell) => {
-        let button = cell.firstChild
-        if (button.value == null || button.value === "") {
-            button.classList.remove('success');
-            button.classList.add('error');
-            valid = false;
-        } else {
-            button.classList.remove('error');
-            button.classList.add('success');
-        }
-    });
-
-    let uniqueX = new Set();
-
-    for (let i = 0; i < cells.length; i += 2) {
-        let button = cells[i].firstChild;
-        if (button.value != null && button.value !== "") {
-            let val = button.value;
-
-            if (uniqueX.has(val)) {
-                button.classList.remove('success');
-                button.classList.add('error');
-                valid = false;
-            } else {
-                uniqueX.add(val);
-            }
-        }
-    }
-
-    if (valid) {
-        showSuccess(table);
-    } else {
-        showError(table, "Пожалуйста, заполните все пустые поля ввода и удалите повторения в столбце X")
-    }
-
-    return validate_target_x() && valid;
-}
-
-function intOrNaN(x) {
-    return /^-?\d+$/.test(x) ? +x : NaN
-}
-
 function validate_form_func() {
-    let valid;
 
-    const startEl = document.getElementById("start");
-    const endEl = document.getElementById("end");
-    const pointsEl = document.getElementById("points");
+    const xElement = document.getElementById("x");
+    const yElement = document.getElementById("y");
 
-    const start = startEl.value, end = endEl.value, points = pointsEl.value;
+    let valid = validate_not_empty(xElement);
+    valid = validate_not_empty(yElement) && valid;
 
-    if (isNaN(start) || isNaN(end) || isNaN(intOrNaN(start)) || isNaN(intOrNaN(end))) {
-        valid = false;
-        if (isNaN(start) || isNaN(intOrNaN(start))) {
-            showError(startEl, "Введите целое число");
-        } else {
-            showSuccess(startEl);
-        }
-        if (isNaN(end) || isNaN(intOrNaN(end))) {
-            showError(endEl, "Введите целое число");
-        } else {
-            showSuccess(endEl)
-        }
-    } else if (intOrNaN(end) <= intOrNaN(start)) {
-        valid = false;
-        showSuccess(startEl);
-        showError(endEl, "Конец интервала должен быть строго больше чем начало интервала");
-    } else {
-        valid = true;
-        showSuccess(startEl);
-        showSuccess(endEl);
-    }
+    const stepElement = document.getElementById("step");
+    const epsElement = document.getElementById("eps");
+    const lengthElement = document.getElementById("length");
 
-    if (isNaN(points) || isNaN(intOrNaN(points))) {
-        valid = false;
-        showError(pointsEl, "Введите целое число");
-    } else if (parseInt(points) < 2 || parseInt(points) > 10) {
-        valid = false;
-        showError(pointsEl, "Введите целое число в диапазоне [2, 10]");
-    } else {
-        valid = valid && true;
-        showSuccess(pointsEl);
-    }
+    valid = validate_non_negative(stepElement) && valid;
+    valid = validate_non_negative(epsElement) && valid;
+    valid = validate_non_negative(lengthElement) && valid;
 
-    return validate_target_x() && valid;
+    return valid;
 }
 
-function validate_input_number() {
+function validate_not_empty(element) {
     let valid;
 
-    const input = document.getElementById("quantity")
-    const number = input.value;
+    let value = element.value;
 
-    if (isNaN(number) || isNaN(parseInt(number))) {
-        showError(input, "Введите целое число");
-        valid = false;
-    } else if (parseInt(number) < 2 || parseInt(number) > 10) {
-        showError(input, "Введите целое число в диапазоне [2, 10]");
+    if (isNaN(value) || isNaN(parseFloat(value))) {
+        showError(element, "Введите число");
         valid = false;
     } else {
-        showSuccess(input);
+        showSuccess(element);
         valid = true;
     }
 
     return valid;
 }
 
-function validate_target_x() {
+function validate_non_negative(element) {
+    if (!validate_not_empty(element)) return false;
+
     let valid;
 
-    const input = document.getElementById("target")
+    let value = element.value;
 
-    console.log("target_x " + input.value + "\n")
-
-    if (input.value === null || input.value === "") {
-        showError(input, "Введите число");
+    if (value <= 0) {
+        showError(element, "Введите число строго > 0");
         valid = false;
     } else {
-        showSuccess(input);
+        showSuccess(element);
         valid = true;
     }
 
     return valid;
-}
-
-function validate_form_file(file_data) {
-    let valid;
-
-    const file_input = document.getElementById("file")
-
-    let lines = file_data.split("\n");
-
-    console.log("lines: " + lines)
-
-    if (lines.length < 2 || lines.length > 10) {
-        showError(file_input, "Количество строк в файле должно быть в диапазоне [2, 10]");
-        valid = false;
-    } else if (lines_is_invalid(lines)) {
-        showError(file_input, "Строки в файле должны выглядеть как два числа разделенные пробелом");
-        valid = false;
-    } else if (!all_x_is_unique(lines)) {
-        showError(file_input, "Все значения координаты X в файле должны быть уникальны");
-        valid = false;
-    } else {
-        showSuccess(file_input);
-        valid = true;
-    }
-
-    return validate_target_x() && valid;
-}
-
-function all_x_is_unique(lines) {
-    let uniqueX = new Set();
-
-    for (let i = 0; i < lines.length; i++) {
-        let x = lines[i].split(" ")[0];
-        if (uniqueX.has(x)) {
-            return false;
-        }
-        uniqueX.add(x);
-    }
-
-    return true;
-}
-
-function lines_is_invalid(lines) {
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        let split_line = line.split(" ");
-        split_line[0] = split_line[0].replace(',', '.');
-        split_line[1] = split_line[1].replace(',', '.');
-
-        if (split_line.length !== 2 || isNaN(split_line[0]) || isNaN(parseFloat(split_line[0]))
-            || isNaN(split_line[1]) || isNaN(parseFloat(split_line[1]))) {
-            console.log(split_line)
-            return true;
-        }
-    }
-    return false;
 }

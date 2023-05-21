@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="ru">
 
 <head>
     <title>Вычмат №5</title>
@@ -11,11 +11,13 @@
     <script type="text/javascript" charset="UTF-8"
             src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="js/validate.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/graph.js"></script>
     <script src="js/main.js"></script>
 </head>
 
@@ -26,63 +28,38 @@
 <div class="data">
     <div class="left_data">
         <div>
-            <button class="btn selected" id="btn_table">Из таблицы</button>
-            <button class="btn" id="btn_file">Из файла</button>
-            <button class="btn" id="btn_func">Заданные функции</button>
-        </div>
-        <div>
             <form id="form">
-                <div class="form_table visible" id="form_table">
-                    <label for="quantity">Введите количество точек в исходных данных:</label>
-                    <input type="number" id="quantity" min="2" max="10" value="2">
-                    <br>
-                    <table id="input_table">
-                        <thead>
-                        <tr>
-                            <th>X</th>
-                            <th>Y</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <small></small>
-                </div>
-                <div class="form_file invisible" id="form_file">
-                    <span style="margin-bottom: 20px;">Выберите файл с исходными данными:</span>
-                    <br>
-                    <input type="file" id="file" accept="text/plain" style="margin-top: 10px;">
-                    <br>
-                    <small></small>
-                </div>
-                <div class="form_func invisible" id="form_func">
+                <div class="form_func" id="form_func">
                     <div>
                         <label for="dropdown">Выберите функцию:</label>
                         <select id="dropdown">
-                            <option value="option1" selected="selected">x^2 + x</option>
-                            <option value="option2">sin(x)</option>
                         </select>
                     </div>
                     <div>
-                        <label for="start">Начало интервала:</label>
-                        <input type="number" id="start" step="1">
+                        <label for="x">Введите x0:</label>
+                        <input type="number" id="x">
                         <small></small>
                     </div>
                     <div>
-                        <label for="end">Конец интервала:</label>
-                        <input type="number" id="end" step="1">
+                        <label for="y">Введите y0:</label>
+                        <input type="number" id="y">
                         <small></small>
                     </div>
                     <div>
-                        <label for="points">Количество точек на интервале:</label>
-                        <input type="number" id="points" min="2" max="10" step="1">
+                        <label for="length">Введите длину интервала:</label>
+                        <input type="number" id="length" step="1">
                         <small></small>
                     </div>
-                </div>
-                <div>
-                    <label for="target">Введите значение для интерполяции:</label>
-                    <input type="number" id="target" step="1">
-                    <small></small>
+                    <div>
+                        <label for="step">Шаг на интервале:</label>
+                        <input type="number" id="step" step="1">
+                        <small></small>
+                    </div>
+                    <div>
+                        <label for="eps">Введите точность:</label>
+                        <input type="number" id="eps">
+                        <small></small>
+                    </div>
                 </div>
                 <div>
                     <input type="submit" id="submit" value="Submit">
@@ -97,12 +74,22 @@
         </div>
         <div>
             <h2>
-                <span>Результат интерполяции для Лагранжа: </span>
-                <span id="lagrange"></span>
+                <details>
+                    <summary>Решение Коши с помощью модификации метода Эйлера</summary>
+                    <p id="enhanced_eiler"></p>
+                </details>
             </h2>
             <h2>
-                <span>Результат интерполяции для Ньютона: </span>
-                <span id="newton"></span>
+                <details>
+                    <summary>Решение Коши с помощью метода Рунге-Кутта</summary>
+                    <p id="runge_kutta"></p>
+                </details>
+            </h2>
+            <h2>
+                <details>
+                    <summary>Решение Коши с помощью метода Милна</summary>
+                    <p id="miln"></p>
+                </details>
             </h2>
         </div>
     </div>
