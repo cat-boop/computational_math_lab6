@@ -31,5 +31,8 @@ async def root():
 @app.post("/find_best_similar", response_model=OduResponseDto)
 async def root(odu_request_dto: OduRequestDto):
     print(odu_request_dto)
-    return odu_service.find_best_similar(odu_request_dto.odu_id, odu_request_dto.x0, odu_request_dto.y0,
-                                         odu_request_dto.interval_length, odu_request_dto.step, odu_request_dto.eps)
+    try:
+        return odu_service.find_best_similar(odu_request_dto.odu_id, odu_request_dto.x0, odu_request_dto.y0,
+                                             odu_request_dto.interval_length, odu_request_dto.step, odu_request_dto.eps)
+    except (ZeroDivisionError, OverflowError) as error:
+        return OduResponseDto(enhanced_eiler=[], runge_kutta=[], miln=[], perfect_solution=[], x_range=[], y_range=[])

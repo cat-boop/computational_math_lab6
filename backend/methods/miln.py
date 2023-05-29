@@ -15,7 +15,7 @@ def miln_differentiation(f, x, y0, step, eps):
         while abs(y_correction - y_prediction) > eps:
             y_prediction = y_correction
             y_correction = correction(step, f, x, y, i, y_prediction)
-            print(y_correction)
+            # print(y_correction)
 
         y.append(y_correction)
 
